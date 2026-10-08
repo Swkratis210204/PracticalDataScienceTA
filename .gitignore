@@ -1,0 +1,19 @@
+# data downloaded by the notebooks (see each lab README)
+online/
+online.zip
+
+# course material, not part of the labs
+assignments/A3/A3-PDS-MScDS-Fall2024.pdf
+
+# python / jupyter
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.venv/
+venv/
+
+# editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
