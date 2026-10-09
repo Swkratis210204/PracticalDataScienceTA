@@ -8,16 +8,13 @@ Along the way we answer simple questions about the data: how is it stored, how l
 
 | Part | Topic | Status |
 |---|---|---|
-| 1 | Loading data: nested JSON files into one table | ready |
-| 2 | Simple exploration: `head`, `info`, `describe`, missing values | ready |
-| 3 | Selecting rows and columns: `loc`, `iloc`, slices, labels | ready |
-| 4 | Math and statistics: `mean`, `median`, `mode`, `value_counts`, changing values | ready |
-| 5 | Filtering and text: boolean filters, slicing text, regex, `drop`, `pop` | planned |
-| 6 | Operations between columns, strings, preprocessing | planned |
-| 7 | Dates and times | planned |
-| 8 | Groups and joins: `groupby`, `concat`, `merge` | planned |
+| 1 | Loading and a first look: nested JSON files into one table, `head`, `info`, `describe`, missing values | ready |
+| 2 | Selecting and summarising: `loc`, `iloc`, `explode`, `mean`, `median`, `value_counts`, `replace`, `map`, `clip` | ready |
+| 3 | Filtering and cleaning text: boolean masks, `.str`, regex, `drop`, `pop`, arithmetic between columns | ready |
+| 4 | Dates and times: `.dt`, differences between dates | ready |
+| 5 | Groups and joins: `groupby`, `concat`, `merge` | ready |
 
-Every part opens with its goals, explains each step in short markdown cells, and ends with a list of findings. Each part is a heading, so you can collapse the parts you are not working on.
+Every part opens with its goal, explains each step in short markdown cells, and ends with a **Your turn** exercise (an empty cell to write in, and the solution folded below it) and a list of findings. Each part is a heading, so you can collapse the parts you are not working on.
 
 ## Run it
 
@@ -27,9 +24,9 @@ Every part opens with its goals, explains each step in short markdown cells, and
 
 **Locally:** install the requirements from the repository root (`pip install -r requirements.txt`), start `jupyter lab`, open `PandasLab.ipynb` and run the cells from top to bottom. The first two cells download the data: the first uses `wget` and `unzip` (Colab, Linux, Mac); the second is plain Python and works on any system, including Windows. Run one of them, not both.
 
-The notebook was written and run with Python 3.13, pandas 3.0.6, numpy 2.5, matplotlib 3.10, seaborn 0.13 and scipy 1.18. It is meant to work on pandas 2.x as well, but that has not been tested.
+The notebook needs only pandas and matplotlib. It was run top to bottom with Python 3.14, pandas 2.3.3 and matplotlib 3.11.
 
-Some cells change the table in place (for example the one that drops `moderator`), so run them once. If you get an error after running a cell twice, rerun from section 1.4 down.
+Some cells change the table in place (for example the one that drops `moderator` in Part 1, the one that drops the empty messages in Part 3, or the merge in Part 5), so run them once. If you get an error after running a cell twice, rerun from Part 1 down.
 
 ## Data
 

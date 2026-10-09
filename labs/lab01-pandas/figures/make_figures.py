@@ -139,10 +139,10 @@ def fig_folders_to_table():
             ["70da56c7...", "[7 names]", "[32 messages]", "llama70b_constructive_communications.txt"],
             ["...", "...", "...", "..."],
             ["cc1e33d9...", "[7 names]", "[32 messages]", "qwen7b_vanilla.txt"]]
-    table(ax, 8.9, 5.8, colw, ["id", "users", "logs", "condition"], rows, fs=7.4, rh=0.75,
+    table(ax, 8.9, 5.8, colw, ["id", "users", "logs", "experiment"], rows, fs=7.4, rh=0.75,
           hfills={3: LBLUE}, fills={(r, 3): LBLUE for r in range(5)})
     text(ax, 14.2, 0.6, "+ timestamp, moderator and ctx_length columns (not shown)\n"
-         "condition = the folder name: it keeps the model and the moderation setting", fs=8.5, color=GRAY)
+         "experiment = the folder name: it keeps the model and the moderation setting", fs=8.5, color=GRAY)
     fig.savefig(OUT / "fig1_folders_to_table.png")
 
 
@@ -154,7 +154,7 @@ def fig_dataframe_anatomy():
     rows = [["llama70b_constructive_communications.txt", "1", "7", "32"],
             ["llama70b_constructive_communications.txt", "1", "7", "32"],
             ["llama70b_nomod", "0", "7", "17"]]
-    xs, hc, ys, ybot = table(ax, 2.6, 5.4, colw, ["condition", "has_moderator", "n_users", "n_messages"],
+    xs, hc, ys, ybot = table(ax, 2.6, 5.4, colw, ["experiment", "has_moderator", "n_users", "n_messages"],
                              rows, fs=8.3, index=[0, 1, 2], iw=1.0, dtypes=["str", "int64", "int64", "int64"])
     text(ax, 2.6 + 0.5, 6.0, "DataFrame", fs=11, weight="bold", ha="left", color=INK)
     # labels
@@ -305,6 +305,160 @@ def fig_boxplot(zip_path):
     fig.savefig(OUT / "fig4_boxplot_anatomy.png")
 
 
+# ---------------------------------------------------------------------- part 5
+def fig_boolean_mask():
+    w, h = 22.0, 6.6
+    fig, ax = canvas(w, h)
+    rows = [["moderator", '""'], ["quiet-right", "I disagree..."], ["moderator", "Thanks @a, ..."],
+            ["gilded-grantor", '""'], ["moderator", '""']]
+    empty = [True, False, False, True, True]
+    text(ax, 3.4, 6.1, "msgs", fs=10.5, weight="bold", mono=True)
+    table(ax, 0.3, 5.6, [2.0, 2.4], ["speaker", "text"], rows, fs=8.2, rh=0.75, index=[0, 1, 2, 3, 4], iw=0.7)
+    arrow(ax, (6.0, 3.4), (7.7, 3.4))
+    text(ax, 6.85, 4.1, 'msgs["text"]\n== \'""\'', fs=7.6, mono=True, color=GRAY)
+    text(ax, 9.4, 6.1, "mask", fs=10.5, weight="bold", mono=True)
+    table(ax, 8.0, 5.6, [2.0], ["text"], [[str(e)] for e in empty], fs=8.4, rh=0.75,
+          index=[0, 1, 2, 3, 4], iw=0.7,
+          fills={(r, 0): (LBLUE if e else "white") for r, e in enumerate(empty)})
+    arrow(ax, (11.2, 3.4), (12.9, 3.4))
+    text(ax, 12.05, 4.1, "msgs[mask]", fs=7.6, mono=True, color=GRAY)
+    text(ax, 16.4, 6.1, "only the rows marked True", fs=10.5, weight="bold")
+    keep = [r for r, e in zip(rows, empty) if e]
+    table(ax, 13.2, 5.6, [2.0, 2.4], ["speaker", "text"], keep, fs=8.2, rh=0.75, index=[0, 3, 4], iw=0.7,
+          fills={(r, c): LBLUE for r in range(3) for c in (0, 1)})
+    text(ax, 16.2, 1.7, "the original labels (0, 3, 4) are kept", fs=8.8, color=BLUE, weight="bold")
+    text(ax, 11.0, 0.5, "a comparison on a whole column gives a True/False for every row; "
+         "putting that mask in [ ] keeps the True rows", fs=9.2, color=GRAY)
+    fig.savefig(OUT / "fig5_boolean_mask.png")
+
+
+# ---------------------------------------------------------------------- part 6
+def fig_cleaning_pipeline():
+    w, h = 24.0, 5.2
+    fig, ax = canvas(w, h)
+    steps = [("raw", '"Thanks @quiet-right,\nlet\'s keep it CIVIL."', ""),
+             ("strip quotes", "Thanks @quiet-right,\nlet's keep it CIVIL.", ".str.strip('\" ')"),
+             ("drop mentions", "Thanks ,\nlet's keep it CIVIL.", ".str.replace(regex)"),
+             ("lowercase", "thanks ,\nlet's keep it civil.", ".str.lower()"),
+             ("tidy spaces", "thanks , let's\nkeep it civil.", ".str.split().str.join(' ')")]
+    bw, gap, x = 3.9, 0.9, 0.3
+    for i, (title, ex, code) in enumerate(steps):
+        fc = LORANGE if i == 0 else (LBLUE if i == len(steps) - 1 else "white")
+        rect(ax, x, 1.3, bw, 2.4, fc=fc, ec=INK)
+        text(ax, x + bw / 2, 4.2, title, fs=10, weight="bold")
+        text(ax, x + bw / 2, 2.5, ex, fs=7.4, mono=True)
+        if code:
+            text(ax, x + bw / 2, 0.8, code, fs=6.8, mono=True, color=GRAY)
+        if i < len(steps) - 1:
+            arrow(ax, (x + bw + 0.1, 2.5), (x + bw + gap - 0.1, 2.5))
+        x += bw + gap
+    fig.savefig(OUT / "fig6_cleaning_pipeline.png")
+
+
+# ---------------------------------------------------------------------- part 7
+def fig_date_parts():
+    w, h = 20.0, 5.6
+    fig, ax = canvas(w, h)
+    rect(ax, 5.5, 4.0, 9.0, 1.1, fc=LBLUE, ec=INK)
+    text(ax, 10.0, 4.55, "2026-02-09 19:01:00", fs=14, mono=True, weight="bold")
+    text(ax, 10.0, 5.35, 'df["timestamp"]  (datetime64)', fs=9, color=GRAY, mono=True)
+    parts = [(".dt.year", "2026"), (".dt.month", "2"), (".dt.day", "9"), (".dt.hour", "19"),
+             (".dt.minute", "1"), (".dt.day_name()", "Monday")]
+    x0, bw, gap = 0.5, 2.7, 0.35
+    for i, (code, val) in enumerate(parts):
+        x = x0 + i * (bw + gap)
+        arrow(ax, (10.0, 4.0), (x + bw / 2, 2.55), lw=1.0, color=GRAY)
+        rect(ax, x, 1.2, bw, 1.3, fc="white", ec=INK)
+        text(ax, x + bw / 2, 1.85, val, fs=12, weight="bold")
+        text(ax, x + bw / 2, 0.7, code, fs=7.6, mono=True, color=GRAY)
+    fig.savefig(OUT / "fig7_date_parts.png")
+
+
+# ---------------------------------------------------------------------- part 8
+def fig_groupby():
+    w, h = 24.0, 6.6
+    fig, ax = canvas(w, h)
+    rows = [["llama8b", "4"], ["qwen7b", "2"], ["llama8b", "3"], ["qwen7b", "2"], ["llama8b", "5"]]
+    grp = [0, 1, 0, 1, 0]
+    text(ax, 2.6, 6.2, "df", fs=10.5, weight="bold", mono=True)
+    table(ax, 0.3, 5.7, [2.2, 1.8], ["model", "gap_min"], rows, fs=8.4, rh=0.7, index=[0, 1, 2, 3, 4], iw=0.7,
+          fills={(r, 0): (LBLUE if g == 0 else LORANGE) for r, g in enumerate(grp)})
+    arrow(ax, (5.9, 3.7), (7.5, 3.7))
+    text(ax, 6.7, 4.4, 'groupby("model")', fs=7.6, mono=True, color=GRAY)
+    text(ax, 10.6, 6.2, "split: one small table per group", fs=10, weight="bold")
+    table(ax, 7.8, 5.7, [1.6, 1.4], ["model", "gap_min"], [["llama8b", "4"], ["llama8b", "3"], ["llama8b", "5"]],
+          fs=8, rh=0.65, hh=0.65, fills={(r, c): LBLUE for r in range(3) for c in (0, 1)},
+          hfills={0: LBLUE, 1: LBLUE})
+    table(ax, 7.8, 2.9, [1.6, 1.4], ["model", "gap_min"], [["qwen7b", "2"], ["qwen7b", "2"]],
+          fs=8, rh=0.65, hh=0.65, fills={(r, c): LORANGE for r in range(2) for c in (0, 1)},
+          hfills={0: LORANGE, 1: LORANGE})
+    arrow(ax, (11.3, 3.7), (13.7, 3.7))
+    text(ax, 12.5, 4.4, '["gap_min"]\n.median()', fs=7.6, mono=True, color=GRAY)
+    text(ax, 16.4, 6.2, "apply + combine: one number per group", fs=10, weight="bold")
+    table(ax, 14.0, 5.7, [1.6, 1.4], ["model", "gap_min"], [["llama8b", "4"], ["qwen7b", "2"]], fs=8, rh=0.65, hh=0.65,
+          fills={(0, 0): LBLUE, (0, 1): LBLUE, (1, 0): LORANGE, (1, 1): LORANGE})
+    fig.savefig(OUT / "fig8_groupby.png")
+
+
+def fig_merge():
+    w, h = 24.0, 6.0
+    fig, ax = canvas(w, h)
+    text(ax, 2.9, 5.6, "msgs", fs=10.5, weight="bold", mono=True)
+    table(ax, 0.3, 5.1, [1.6, 2.4], ["conv_id", "text"], [["a1", "I agree..."], ["a1", "Thanks @..."], ["b7", "Hmm..."]],
+          fs=8.4, rh=0.7, hfills={0: LBLUE}, fills={(r, 0): LBLUE for r in range(3)})
+    text(ax, 2.9, 1.9, "one row per message", fs=8.5, color=GRAY)
+    text(ax, 8.4, 5.6, "df", fs=10.5, weight="bold", mono=True)
+    table(ax, 6.2, 5.1, [1.2, 2.2], ["id", "setting"], [["a1", "vanilla"], ["b7", "nomod"]],
+          fs=8.4, rh=0.7, hfills={0: LBLUE}, fills={(r, 0): LBLUE for r in range(2)})
+    text(ax, 7.9, 2.6, "one row per conversation", fs=8.5, color=GRAY)
+    arrow(ax, (10.1, 3.6), (12.1, 3.6))
+    text(ax, 11.1, 4.4, 'msgs.merge(df,\nleft_on="conv_id",\nright_on="id")', fs=7.2, mono=True, color=GRAY)
+    text(ax, 17.0, 5.6, "result: every message gets the setting of its conversation", fs=10, weight="bold")
+    table(ax, 12.4, 5.1, [1.6, 2.4, 1.2, 2.2], ["conv_id", "text", "id", "setting"],
+          [["a1", "I agree...", "a1", "vanilla"], ["a1", "Thanks @...", "a1", "vanilla"], ["b7", "Hmm...", "b7", "nomod"]],
+          fs=8.4, rh=0.7, hfills={0: LBLUE, 2: LBLUE, 3: LORANGE},
+          fills={**{(r, 0): LBLUE for r in range(3)}, **{(r, 2): LBLUE for r in range(3)},
+                 **{(r, 3): LORANGE for r in range(3)}})
+    text(ax, 17.0, 1.9, "rows are matched by the key: same number of rows as msgs", fs=8.5, color=BLUE, weight="bold")
+    ax.set_ylim(1.4, h)                                   # nothing is drawn below 1.4: crop the empty strip
+    fig.set_size_inches(w * SCALE, (h - 1.4) * SCALE)
+    fig.savefig(OUT / "fig8_merge.png")
+
+
+def fig_join_types():
+    w, h = 24.0, 9.4
+    fig, ax = canvas(w, h)
+    # the two input tables
+    text(ax, 3.0, 9.0, "A: gap_table", fs=10.5, weight="bold", mono=True)
+    table(ax, 0.8, 8.6, [2.2, 1.6], ["model", "gap_min"],
+          [["qwen7b", "2"], ["llama8b", "4"], ["llama70b", "14"]], fs=8.4, rh=0.62, hh=0.62,
+          fills={(0, 0): LORANGE, (0, 1): LORANGE, (1, 0): LBLUE, (1, 1): LBLUE, (2, 0): LBLUE, (2, 1): LBLUE},
+          hfills={0: LBLUE})
+    text(ax, 11.0, 9.0, "B: model_info", fs=10.5, weight="bold", mono=True)
+    table(ax, 8.8, 8.6, [2.2, 1.8], ["model", "billions"],
+          [["llama8b", "8"], ["llama70b", "70"], ["gemma9b", "9"]], fs=8.4, rh=0.62, hh=0.62,
+          fills={(0, 0): LBLUE, (0, 1): LBLUE, (1, 0): LBLUE, (1, 1): LBLUE, (2, 0): LORANGE, (2, 1): LORANGE},
+          hfills={0: LBLUE})
+    text(ax, 17.5, 8.0, "the key is `model`:\nblue = found in both tables\norange = found in only one", fs=8.8, color=GRAY, ha="left")
+    # the three results
+    cols = ["model", "gap_min", "billions"]
+    cw = [1.9, 1.4, 1.5]
+    results = [
+        ("how=\"inner\"", "only keys found in both", 0.4,
+         [["llama8b", "4", "8"], ["llama70b", "14", "70"]], {}),
+        ("how=\"left\"", "every row of A", 8.3,
+         [["qwen7b", "2", "NaN"], ["llama8b", "4", "8"], ["llama70b", "14", "70"]], {(0, 2): LORANGE}),
+        ("how=\"outer\"", "every row of A and of B", 16.2,
+         [["qwen7b", "2", "NaN"], ["llama8b", "4", "8"], ["llama70b", "14", "70"], ["gemma9b", "NaN", "9"]],
+         {(0, 2): LORANGE, (3, 1): LORANGE}),
+    ]
+    for title, sub, x, rows, fills in results:
+        text(ax, x + 2.4, 5.2, title, fs=10.5, weight="bold", mono=True)
+        text(ax, x + 2.4, 4.65, sub, fs=8.8, color=GRAY)
+        table(ax, x, 4.2, cw, cols, rows, fs=8.4, rh=0.62, hh=0.62, fills=fills)
+    fig.savefig(OUT / "fig8_join_types.png")
+
+
 if __name__ == "__main__":
     zip_path = sys.argv[1] if len(sys.argv) > 1 else "online.zip"
     fig_json_to_row()
@@ -315,4 +469,10 @@ if __name__ == "__main__":
     fig_loc_iloc()
     fig_explode()
     fig_boxplot(zip_path)
+    fig_boolean_mask()
+    fig_cleaning_pipeline()
+    fig_date_parts()
+    fig_groupby()
+    fig_merge()
+    fig_join_types()
     print("done")
