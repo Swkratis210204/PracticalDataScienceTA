@@ -9,6 +9,8 @@ A tiny crawler that reads the first pages of [books.toscrape.com](https://books.
 | `crawler.py` | the crawler |
 | `requirements.txt` | the libraries it needs (empty for now, you fill it in) |
 | `.env` | secrets, such as the API key (empty for now, you fill it in) |
+| `test_quotes.py` | a test we will use later in the lab (do not run it yet) |
+| `.github/workflows/test.yml` | tells GitHub to run the tests on pull requests (used later in the lab) |
 
 ## Run it
 
