@@ -1,12 +1,15 @@
-"""Draws the figures used in assignment1_student.md.
+"""Draws the figures used in student/assignment1_student.md.
 
-Run from this folder:  python make_figures.py
+Run from anywhere:  python instructor/make_figures.py
+Writes into ../student/figures/.
 Needs only matplotlib. Writes pipeline.png, persona_grid.png, label_scale.png and annotator_anatomy.png.
 Colours: blue, orange and aqua are the first three slots of a colour-blind-safe categorical palette;
 every box also carries a text label, so colour is never the only signal.
 All four figures have exactly the same width (12 inches, 1 unit = 1 inch), so that at the same display width
 their text has the same size.
 """
+from pathlib import Path
+
 import matplotlib
 
 matplotlib.use("Agg")
@@ -42,8 +45,12 @@ def arrow(ax, p, q, color=MUTED):
     ax.add_patch(FancyArrowPatch(p, q, arrowstyle="-|>", mutation_scale=16, lw=1.8, color=color, shrinkA=0, shrinkB=0))
 
 
+OUT = Path(__file__).resolve().parent.parent / "student" / "figures"
+
+
 def save(fig, name):
-    fig.savefig(name, dpi=DPI, facecolor="white")  # no cropping: every figure keeps the same width
+    OUT.mkdir(exist_ok=True)
+    fig.savefig(OUT / name, dpi=DPI, facecolor="white")  # no cropping: every figure keeps the same width
     plt.close(fig)
     print("wrote", name)
 
@@ -63,8 +70,8 @@ def pipeline():
     ax.text(fx0 + 0.18, fy1 - 0.2, "Model annotation", ha="left", va="center", fontsize=12.5, fontweight="bold", color=INK)
     ax.text(fx0 + 0.18, fy1 - 0.48, "identities + a baseline, two settings", ha="left", va="center", fontsize=10, color=MUTED)
 
-    box(ax, xs[0], mid, w, h, "A  Load, clean", "20 conversations\nfrom one file", BLUE)
-    box(ax, xs[1], mid, w, h, "B  Human\nannotation", "you rate the items", ORANGE)
+    box(ax, xs[0], mid, w, h, "A  Load,\nannotate", "20 comments", ORANGE)
+    box(ax, xs[1], mid, w, h, "B  Your\nannotations", "check your ratings", ORANGE)
     # branch 1: generate, then annotate with the conversation as context
     box(ax, xs[2], top, w, h, "C  Generate", "one talk per item,\nrandom personas", BLUE)
     box(ax, xs[3], top, w, h, "D  With context", "they read the\ntalk first", AQUA)
@@ -96,9 +103,9 @@ def persona_grid():
     top = 2.4  # top edge of the grid rows
     genders = ["woman", "man"]
     politics = ["left", "right"]
-    styles = ["strict", "moderate", "lenient"]
+    ages = ["under 30", "over 50"]
 
-    ax.text(0.05, 3.55, "A small starting grid (an example): who it is × how it annotates", fontsize=13, fontweight="bold", color=INK, va="center")
+    ax.text(0.05, 3.55, "A small starting grid (an example): who the annotator is", fontsize=13, fontweight="bold", color=INK, va="center")
 
     # column headers: who it is (gender, then politics)
     ax.text(x0 - 0.12, 3.05, "gender", ha="right", va="center", fontsize=10.5, color=MUTED, style="italic")
@@ -110,21 +117,21 @@ def persona_grid():
         for p, pol in enumerate(politics):
             ax.text(gx + (p + 0.5) * cw, 2.64, pol, ha="center", va="center", fontsize=11, color=INK)
 
-    # row header: how it annotates
-    ax.text(0.45, top - 1.5 * ch, "annotation style\n(how it annotates)", rotation=90, ha="center", va="center", fontsize=10.5, color=MUTED, style="italic", linespacing=1.3)
+    # row header: age
+    ax.text(0.9, top - ch, "age", rotation=90, ha="center", va="center", fontsize=10.5, color=MUTED, style="italic")
 
-    for r, style in enumerate(styles):
+    for r, age in enumerate(ages):
         y = top - (r + 1) * ch
-        ax.text(x0 - 0.12, y + ch / 2, style, ha="right", va="center", fontsize=11.5, fontweight="bold", color=INK)
+        ax.text(x0 - 0.12, y + ch / 2, age, ha="right", va="center", fontsize=11.5, fontweight="bold", color=INK)
         for c in range(4):
             gender, pol = genders[c // 2], politics[c % 2]
             x = x0 + c * cw
             ax.add_patch(Rectangle((x + 0.04, y + 0.04), cw - 0.08, ch - 0.08, fc=TINT[BLUE], ec=BLUE, lw=1.2))
-            ax.text(x + cw / 2, y + ch / 2, f"{gender} / {pol} → {style}", ha="center", va="center", fontsize=9, color=INK)
+            ax.text(x + cw / 2, y + ch / 2, f"{gender} / {pol} / {age}", ha="center", va="center", fontsize=9, color=INK)
 
     # the baseline, next to the grid
     bx = x0 + 4 * cw + 0.35
-    box(ax, bx, top - 1.5 * ch - 0.5, 1.85, 1.0, "+ baseline", "no persona at all", ORANGE, title_size=12, sub_size=10)
+    box(ax, bx, top - ch - 0.5, 1.85, 1.0, "+ baseline", "no persona at all", ORANGE, title_size=12, sub_size=10)
 
     ax.text(0.05, 0.18, "Each cell is one persona, and each persona becomes one annotator. This grid is only a starting point: you will adapt it.", fontsize=10.5, color=MUTED)
     save(fig, "persona_grid.png")
@@ -168,10 +175,10 @@ def annotator_anatomy():
     w, h = 4.5, 0.9
     x_in = 0.1  # left edge of the input boxes
     ys = [3.1, 2.1, 1.1, 0.1]
-    box(ax, x_in, ys[0], w, h, "Persona  (one per annotator)", "who it is and how it annotates,\nor none (the baseline)", ORANGE, title_size=11.5, sub_size=10)
+    box(ax, x_in, ys[0], w, h, "Persona  (one per annotator)", "who it is (never how to rate),\nor none (the baseline)", ORANGE, title_size=11.5, sub_size=10)
     box(ax, x_in, ys[1], w, h, "Context  (2 conditions)", "none, or the small talk\nabout the item", AQUA, title_size=11.5, sub_size=10)
     box(ax, x_in, ys[2], w, h, "Instructions  (fixed)", "what the label means,\nanswer with one number from 1 to 5", GREY, title_size=11.5, sub_size=10)
-    box(ax, x_in, ys[3], w, h, "Item to label  (fixed)", "one of the 20 conversations", GREY, title_size=11.5, sub_size=10)
+    box(ax, x_in, ys[3], w, h, "Item to label  (fixed)", "one of the 20 comments", GREY, title_size=11.5, sub_size=10)
     box(ax, 5.9, 1.25, 2.4, 1.5, "Annotator-agent", "same model,\nsame settings", GREY, title_size=12, sub_size=10.5)
     box(ax, 9.0, 1.25, 2.7, 1.5, "Label", "a number from 1 to 5", BLUE, title_size=12, sub_size=10.5)
     targets = [2.5, 2.2, 1.8, 1.5]
