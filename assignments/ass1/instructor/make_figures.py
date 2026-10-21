@@ -177,10 +177,10 @@ def annotator_anatomy():
     ys = [3.1, 2.1, 1.1, 0.1]
     box(ax, x_in, ys[0], w, h, "Persona  (one per annotator)", "who it is (never how to rate),\nor none (the baseline)", ORANGE, title_size=11.5, sub_size=10)
     box(ax, x_in, ys[1], w, h, "Context  (2 conditions)", "none, or the small talk\nabout the item", AQUA, title_size=11.5, sub_size=10)
-    box(ax, x_in, ys[2], w, h, "Instructions  (fixed)", "what the label means,\nanswer with one number from 1 to 5", GREY, title_size=11.5, sub_size=10)
+    box(ax, x_in, ys[2], w, h, "Instructions  (fixed)", "rate 1 to 5; for 3 to 5,\nquote the toxic words", GREY, title_size=11.5, sub_size=10)
     box(ax, x_in, ys[3], w, h, "Item to label  (fixed)", "one of the 20 comments", GREY, title_size=11.5, sub_size=10)
     box(ax, 5.9, 1.25, 2.4, 1.5, "Annotator-agent", "same model,\nsame settings", GREY, title_size=12, sub_size=10.5)
-    box(ax, 9.0, 1.25, 2.7, 1.5, "Label", "a number from 1 to 5", BLUE, title_size=12, sub_size=10.5)
+    box(ax, 9.0, 1.25, 2.7, 1.5, "Rating", "1 to 5 (+ words for 3-5)", BLUE, title_size=12, sub_size=10.5)
     targets = [2.5, 2.2, 1.8, 1.5]
     colors = [ORANGE, AQUA, MUTED, MUTED]
     for y, t, c in zip(ys, targets, colors):

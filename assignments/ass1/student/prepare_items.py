@@ -10,7 +10,7 @@ a different seed gives a different sample. Write your seed down: it goes in your
 your report.
 
 Writes, into items/:
-  items.csv      id | text | rating | label | evidence   (last three empty)
+  items.csv      id | text | rating | label | evidence   (last three empty; evidence is "not needed" for ratings 1-2)
   annotate.html  a self-contained local page to rate the items and export the CSV
 """
 import argparse
@@ -110,7 +110,7 @@ mark{background:#ffd54a;color:#000;border-radius:3px}
 <li>Quoted or reported words count less than words the writer says to someone.</li>
 <li>If several messages differ, let the <b>most toxic part</b> weigh most.</li>
 <li>Use your own judgement: careful readers disagree, and there is no wrong answer. Rate alone, and do not go back to change a rating.</li>
-<li>For every item, <b>select with the mouse the words</b> that decided your rating: they are your evidence. For a civil text, select the words that show it is respectful. You need a rating and at least one selection to go on.</li>
+<li>Give every item a rating. If you rate <b>3, 4 or 5</b>, also <b>select with the mouse the words</b> that make the text toxic: they are your evidence, and you need at least one to go on. For a 1 or a 2 you only give the rating: the evidence is "not needed".</li>
 </ul>
 <p class="note">Content note: the texts may contain harsh language.</p>
 <button id="start" class="p">Start annotating</button>
@@ -123,8 +123,9 @@ Your answers are saved in this browser as you go.</p>
 <div class="scale" id="scale"></div>
 <div class="hint"><span>1 = fully civil</span><span>5 = very toxic</span></div>
 <p>Label: <b id="lab">-</b></p>
-<label>Evidence: select the part of the text that made you give this rating (it is added automatically):</label>
-<div id="chips" class="chips"></div>
+<p id="evno" class="note" style="display:none">Evidence: not needed for a 1 or a 2.</p>
+<div id="evbox" style="display:none"><label>Evidence: select with the mouse the words that make it toxic (they are added below automatically):</label>
+<div id="chips" class="chips"></div></div>
 <div class="nav">
 <button id="prev">&larr; Previous</button><button id="next" class="p">Next &rarr;</button>
 <button id="gbtn">Guidelines</button>
@@ -136,19 +137,22 @@ Your answers are saved in this browser as you go.</p>
 <script>
 const ITEMS=__ITEMS__;
 const KEY="ass1_ratings_seed___SEED__";
-const ok=id=>{const x=S[id];return !!(x&&x.rating&&(x.evidence||[]).length>=1)};  // a rating and at least one highlighted passage
+const ok=id=>{const x=S[id];return !!(x&&x.rating&&(+x.rating<=2||(x.evidence||[]).length>=1))};  // a rating; for 3-5 also at least one highlighted passage
 let S={};try{S=JSON.parse(localStorage.getItem(KEY)||"{}")}catch(e){}
 let i=0;
 const $=id=>document.getElementById(id);
 $("scale").innerHTML=[1,2,3,4,5].map(n=>`<label><input type="radio" name="r" value="${n}"><span>${n}</span></label>`).join("");
 function save(){const it=ITEMS[i],r=document.querySelector("input[name=r]:checked");
  const old=S[it.id]||{};S[it.id]={rating:r?r.value:"",evidence:old.evidence||[]};
+ if(r&&+r.value<=2)S[it.id].evidence=[];  // evidence only for 3-5
+ $("evbox").style.display=r&&+r.value>=3?"":"none";
+ $("evno").style.display=r&&+r.value<=2?"":"none";
  try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
  const done=ITEMS.filter(x=>ok(x.id)).length;
  const left=ITEMS.length-done;$("exp").style.display=left>0?"none":"";
  $("hint2").textContent=left>0?left+" of "+ITEMS.length+" items still to complete (a rating and a highlighted passage).":"All items complete: the download button is now available.";
  $("next").disabled=!ok(it.id)||i===ITEMS.length-1;
- $("need").textContent=ok(it.id)?"":"To continue: pick a rating and select the words that decided it.";
+ $("need").textContent=ok(it.id)?"":(S[it.id].rating?"To continue: select the words that make it toxic.":"To continue: pick a rating.");
  $("lab").textContent=lab(S[it.id].rating)||"-";
  $("bar").value=100*done/ITEMS.length;$("status").textContent=done+" / "+ITEMS.length+" complete";}
 function show(){const it=ITEMS[i],s=S[it.id]||{};
@@ -162,17 +166,17 @@ function render(){const it=ITEMS[i],ev=(S[it.id]&&S[it.id].evidence)||[];
 const lab=r=>r?(+r<=2?"civil":"toxic"):"";
 const esc=t=>t.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 $("text").addEventListener("mouseup",()=>{const t=String(getSelection()).trim();if(!t)return;
- const it=ITEMS[i];if(!it.text.includes(t))return;save();const e=S[it.id].evidence;
+ const it=ITEMS[i];if(!it.text.includes(t))return;save();if(!(+S[it.id].rating>=3))return;const e=S[it.id].evidence;
  if(!e.includes(t))e.push(t);getSelection().removeAllRanges();save();render();});
 $("chips").addEventListener("click",ev=>{const k=ev.target.dataset.k;if(k===undefined)return;
  S[ITEMS[i].id].evidence.splice(+k,1);save();render();});
 function go(d){save();if(d>0&&!ok(ITEMS[i].id))return;i=Math.min(ITEMS.length-1,Math.max(0,i+d));show();}
 $("prev").onclick=()=>go(-1);$("next").onclick=()=>go(1);
-document.addEventListener("change",e=>{if(e.target.name==="r")save()});
+document.addEventListener("change",e=>{if(e.target.name==="r"){save();render()}});
 const q=v=>'"'+String(v).replace(/"/g,'""')+'"';
 $("exp").onclick=()=>{save();
  if(ITEMS.some(x=>!ok(x.id)))return;
- const rows=["id,text,rating,label,evidence"].concat(ITEMS.map(x=>[x.id,q(x.text),S[x.id]?S[x.id].rating:"",lab(S[x.id]?S[x.id].rating:""),q(S[x.id]?(S[x.id].evidence||[]).join(" || "):"")].join(",")));
+ const rows=["id,text,rating,label,evidence"].concat(ITEMS.map(x=>[x.id,q(x.text),S[x.id]?S[x.id].rating:"",lab(S[x.id]?S[x.id].rating:""),q(S[x.id]?(+S[x.id].rating<=2?"not needed":(S[x.id].evidence||[]).join(" || ")):"")].join(",")));
  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob(["\\ufeff"+rows.join("\\r\\n")],{type:"text/csv"}));
  a.download="items_rated.csv";a.click();};
 const G=$("guide");
