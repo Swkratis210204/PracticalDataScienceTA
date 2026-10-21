@@ -198,6 +198,10 @@ There are two conditions. In **each** of them, every identity of your grid annot
 
 Write a report of **3-4 pages**, plus **one more page** for part 3 (AI use and sources): **4-5 pages in total**. It has three parts.
 
+> 🌐 **The report must be written in English.**
+>
+> 🔗 **The report must contain the link to your GitHub repository.** Working with GitHub on this assignment is mandatory.
+
 **1. Justify your choices.** At each step say what you did **and why**: your seed, how you rated (the guidelines you followed, an example of your evidence), how you made the conversations (the number of participants and of comments, the length limit, and why), the model you chose and why (and which others you tried, if any), your grid (what you changed or added compared with the starting grid, the dimensions and the exact attributes and values of each persona, and why), where you put the context, how you handled invalid answers.
 
 **2. Results and story.** Report the results of the four comparisons of part F, in tables and figures. For every metric you chose, say **why you chose it**, then **interpret** the values: what they mean and what they tell you. There is a lot to explain here, so plan your pages accordingly. Does context move the labels, and in which direction? Which identity is closest to you, and is it the same with and without context? Does the context bring the models closer to you or further away? Do the personas agree more or less with each other once they have read the conversation? Which identities move the most? Do the personas differ from the baseline at all, and which dimension (gender, politics, age...) matters most?
@@ -218,7 +222,7 @@ Write a report of **3-4 pages**, plus **one more page** for part 3 (AI use and s
 - [ ] **your grid**: the final grid in a file, with the dimensions, the values and the exact attributes of each persona
 - [ ] **the annotations of the model annotators**, with and without context, in the same format as yours plus the columns `annotator` and `prompt`, for every persona of your grid plus the baseline on all 20 items (parts D and E): **one table** with a column `context`, **or two tables**, as you prefer
 - [ ] **the agreement results** (part F), in whatever format you prefer (csv, json...)
-- [ ] **the report**
+- [ ] **the report**, in English, with the **link to your GitHub repository**
 
 **Every result must be visible in the notebook.** Choose the clearest form (printed output, tables, figures), with titles and labels. A result that is computed but not shown does not count: someone reading your notebook must see each result without running anything.
 

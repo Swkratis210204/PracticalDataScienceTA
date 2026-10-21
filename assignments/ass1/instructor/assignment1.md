@@ -35,9 +35,11 @@ Calls: generation 20 conversations × the students' number of comments; annotati
 4. **The grid:** the final grid in a file (dimensions, values, exact persona attributes).
 5. **The model annotations** with and without context, in the format of the human file plus `annotator` and `prompt` (the saved system prompt), every persona plus the baseline on all 20 items: one table with a `context` column, or two.
 6. **The agreement results**, in any format.
-7. **The report** (3-4 pages, plus one page of AI use and sources: 4-5 in total).
+7. **The report** (3-4 pages, plus one page of AI use and sources: 4-5 in total), in English, with the **link to the student's GitHub repository**. Working with GitHub is mandatory.
 
 **Check these when marking (the hidden traps):**
+
+- **The report:** it is in English and contains the link to the student's GitHub repository (working with GitHub is mandatory).
 
 - **Counts:** every annotator of the student's grid plus the baseline appears in **both** conditions, on all 20 items. Count the annotation files: (personas + 1) per condition.
 - **Same items, same instructions** in both conditions and for all personas. Only persona and context may differ. **Requirement, checked in the `prompt` column:** for the same annotator, the prompt in D and in E is identical except for the `context` field (the conversation in D, empty in E); instructions, persona and wording must not change.
