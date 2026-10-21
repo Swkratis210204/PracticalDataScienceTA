@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>git and GitHub, a self-paced handbook</title>
+<style>
+  @page { size: A4; margin: 17mm 17mm 18mm 17mm; }
+  * { box-sizing: border-box; }
+  body { font-family: "Segoe UI", Arial, sans-serif; font-size: 10.4pt; line-height: 1.5; color: #1f2937; margin: 0; }
+  h1 { font-size: 25pt; margin: 0 0 4pt; line-height: 1.15; }
+  h2 { font-size: 15.5pt; margin: 16pt 0 5pt; padding-bottom: 3pt; border-bottom: 2px solid #2563eb; }
+  h3 { font-size: 11.5pt; margin: 13pt 0 3pt; color: #1d4ed8; }
+  p { margin: 0 0 7pt; }
+  ul, ol { margin: 0 0 8pt; padding-left: 18pt; }
+  li { margin-bottom: 2.5pt; }
+  code { font-family: Consolas, "Courier New", monospace; font-size: 9.2pt; background: #f1f5f9; padding: 0 3pt; border-radius: 3px; }
+  pre { font-family: Consolas, "Courier New", monospace; font-size: 8.5pt; line-height: 1.4; background: #0f172a; color: #e2e8f0;
+        padding: 7pt 10pt; border-radius: 5px; margin: 4pt 0 8pt; white-space: pre-wrap; break-inside: avoid; }
+  pre .c { color: #94a3b8; }
+  table { border-collapse: collapse; width: 100%; margin: 4pt 0 10pt; font-size: 9.3pt; }
+  tr { break-inside: avoid; }
+  th { background: #e0e7ff; text-align: left; }
+  th, td { border: 1px solid #cbd5e1; padding: 3.5pt 6pt; vertical-align: top; }
+  td:first-child code { white-space: nowrap; }
+  figure { margin: 6pt 0 10pt; text-align: center; break-inside: avoid; }
+  figure img { max-width: 78%; }
+  figcaption { font-size: 8.8pt; color: #6b7280; margin-top: 2pt; }
+  .lead { font-size: 12pt; color: #475569; margin-bottom: 12pt; }
+  .box { border-left: 4px solid #2563eb; background: #eff6ff; padding: 7pt 11pt; margin: 8pt 0 10pt; border-radius: 0 5px 5px 0; break-inside: avoid; }
+  .box.hist { border-color: #16a34a; background: #f0fdf4; }
+  .box.warn { border-color: #ea580c; background: #fff7ed; }
+  .box b.t { display: block; margin-bottom: 2pt; }
+  .box p:last-child, .box ul:last-child { margin-bottom: 0; }
+  .story { font-style: italic; color: #334155; }
+  .cols { display: flex; gap: 12pt; }
+  .cols > div { flex: 1; }
+  .pb { break-before: page; }
+  .cover { padding: 4pt 0 6pt; }
+  .tag { display: inline-block; font-size: 9pt; letter-spacing: .06em; text-transform: uppercase; color: #2563eb; font-weight: 700; margin-bottom: 4pt; }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="tag">Practical Data Science · self-paced reading</div>
+  <h1>git and GitHub:<br>keep every version of your work</h1>
+  <p class="lead">What to type, why it matters, and the habits that save you at 2 a.m. before a deadline. About 40 minutes of reading. Best read with a terminal open next to it.</p>
+</div>
+
+<h2>1. A story, and why you should care</h2>
+
+<p class="story">It is the night before the deadline. Nina has an analysis that finally works: a script, a notebook, a folder of results. At 23:40 she tries a "small improvement". The numbers change, the plots look wrong, and she cannot remember what the code looked like an hour ago. She has <code>analysis.py</code>, <code>analysis_new.py</code>, <code>analysis_final.py</code> and <code>analysis_final_REAL.py</code>, and none of them is the version that worked. Her partner, meanwhile, has sent her their own copy by e-mail, and the two cannot be put together.</p>
+
+<p>Now picture the same night with git. Nina types one command and sees every saved version of her project, with the date and a one-line reason for each. She finds the last good one, brings it back in ten seconds, and goes to bed. Her partner works on a separate line of work and the two are joined at the end. This is what the tool is for.</p>
+
+<div class="box hist"><b class="t">The best reason to use git and GitHub: the history</b>
+<p>Every time you save a <b>commit</b>, git stores a snapshot of your whole project. You can list all of them, compare any two, <b>go back to any of them</b>, and see on a graph how the project grew and which branches joined which. You never lose work, and you always know <i>what changed, when, who changed it and why</i>. Everything else in this handbook (branches, pull requests, tests) builds on this one idea. We come back to the history in every section, in green boxes like this one.</p></div>
+
+<h3>Git and GitHub are not the same thing</h3>
+<table>
+<tr><th style="width:50%">git</th><th>GitHub</th></tr>
+<tr><td>A <b>program</b> on your computer. Free, open source, works without internet.</td><td>A <b>website</b> (a company, owned by Microsoft) that stores git repositories online.</td></tr>
+<tr><td>Records the history of a folder: commits, branches, merges.</td><td>Adds what git alone does not have: a backup, a place to share, <b>pull requests</b>, issues, automatic tests (Actions), a visual history.</td></tr>
+<tr><td>You use it through commands: <code>git commit</code>, <code>git log</code>…</td><td>You use it in the browser (and git talks to it with <code>push</code> and <code>pull</code>).</td></tr>
+<tr><td>Could be used alone, with no GitHub at all.</td><td>Needs git underneath. GitLab and Bitbucket are alternatives that do the same job.</td></tr>
+</table>
+<p>A good way to remember: <b>git is the camera, GitHub is the photo album</b> that you share. The history exists in both: <code>git log</code> shows it in the terminal, and GitHub shows it as a clickable timeline and graph.</p>
+
+<h3>Why this matters in a data science course</h3>
+<ul>
+<li><b>Your work is code plus data plus results</b>, and it changes all the time. Without history you cannot say which version of the code produced which table.</li>
+<li><b>Reproducibility.</b> A result you cannot reproduce is not a result. A commit pins down exactly what the code looked like when you ran it.</li>
+<li><b>Teamwork.</b> Two people can change the same project without overwriting each other.</li>
+<li><b>Safety.</b> Experiments live on a branch, so the version that works stays untouched.</li>
+</ul>
+
+<h2>2. The mental model: four places</h2>
+<p>Almost every confusion with git goes away once you know that your work lives in <b>four places</b>, and that each command moves changes from one place to the next.</p>
+<figure><img src="figures/four_places.png" alt="working folder, staging, local repo, GitHub"><figcaption>Figure 1. add, commit and push move your work to the right. pull brings other people's work back from GitHub.</figcaption></figure>
+<table>
+<tr><th style="width:26%">Place</th><th>What it is</th></tr>
+<tr><td>Working folder</td><td>The files you see and edit. Normal folder on your disk.</td></tr>
+<tr><td>Staging area</td><td>A waiting room. You choose which changes go into the next snapshot. <code>git add</code> puts changes here.</td></tr>
+<tr><td>Local repository</td><td>The saved history, inside the hidden <code>.git</code> folder. <code>git commit</code> turns the staged changes into a permanent snapshot.</td></tr>
+<tr><td>Remote (GitHub)</td><td>A copy of the repository on the internet. By convention its nickname is <code>origin</code>. <code>git push</code> sends your commits there, <code>git pull</code> brings new ones back.</td></tr>
+</table>
+<p><b>Why a staging area at all?</b> You might have changed five files for two different reasons. Staging lets you commit them as two clean snapshots, each with its own message, instead of one messy one.</p>
+
+<h2>3. Your first repository</h2>
+
+<h3>One-time setup</h3>
+<p>Git writes your name into every commit. Tell it who you are once (any e-mail works, but use the one of your GitHub account if you want your commits linked to your profile):</p>
+<pre>git config --global user.name  "Your Name"
+git config --global user.email "you@example.com"</pre>
+
+<h3>Create the repo and the first commit</h3>
+<p>Open a terminal <b>inside your project folder</b> (not the folder above it).</p>
+<pre>git init                         <span class="c"># make this folder a repository (creates the hidden .git)</span>
+git status                       <span class="c"># what changed? what is staged? run it all the time</span>
+git add .                        <span class="c"># stage everything (or name files: git add analysis.py)</span>
+git commit -m "initial commit"   <span class="c"># save the snapshot with a message</span>
+git branch -M main               <span class="c"># call the main branch "main"</span></pre>
+
+<h3>Connect it to GitHub</h3>
+<p>On github.com click <b>New repository</b> and give it a name. <b>Leave README, .gitignore and license unticked</b>: the repo must be empty, otherwise your first push is rejected. Copy its URL, then:</p>
+<pre>git remote add origin https://github.com/&lt;your-user&gt;/&lt;your-repo&gt;.git
+git push -u origin main          <span class="c"># -u remembers the link, later "git push" is enough</span></pre>
+<p>Refresh the page: your files are online. If you work on a laptop you may lose, you now have a backup too.</p>
+
+<h3>The everyday loop</h3>
+<p>Ninety percent of your git life is this loop. Repeat it often.</p>
+<pre>git status                       <span class="c"># 1. what did I change?</span>
+git diff                         <span class="c"># 2. show me the exact lines</span>
+git add analysis.py              <span class="c"># 3. choose what goes into the snapshot</span>
+git commit -m "drop rows with missing ratings"   <span class="c"># 4. save it, with the reason</span>
+git push                         <span class="c"># 5. back it up on GitHub</span></pre>
+
+<div class="box"><b class="t">Reading the output of git status</b>
+<ul><li><b>Untracked</b>: a new file git does not know yet. <b>Modified</b>: a tracked file you changed.</li>
+<li><b>Changes to be committed</b>: staged, will be in the next commit. <b>Changes not staged</b>: edited but not added.</li></ul></div>
+
+<h2>4. The history: look, compare, go back</h2>
+<p>This is the reason to learn git. Every commit has an ID (a <b>hash</b>, like <code>a1b2c3d</code>), a message, an author, a date and a pointer to the commit before it. Together they form a chain: your project's memory.</p>
+
+<h3>Look at the history in the terminal</h3>
+<pre>git log                          <span class="c"># every commit, newest first, full detail</span>
+git log --oneline                <span class="c"># one line each: short hash + message</span>
+git log --oneline --graph --all  <span class="c"># the shape of history, with all branches</span>
+git log -p                       <span class="c"># each commit with its diff</span>
+git log -5                       <span class="c"># only the last 5</span>
+git log -- analysis.py           <span class="c"># only commits that touched this file</span>
+git show a1b2c3d                 <span class="c"># one commit: message, author, the diff</span></pre>
+
+<figure><img src="figures/history_graph.png" alt="a history graph with a branch and a merge"><figcaption>Figure 2. This is what <code>git log --oneline --graph --all</code> draws as text, and what GitHub draws as a picture. A branch splits off from main and joins it again in a merge commit. Each dot is a snapshot you can return to.</figcaption></figure>
+
+<h3>Compare versions</h3>
+<pre>git diff                         <span class="c"># working folder vs last commit (not yet staged)</span>
+git diff --staged                <span class="c"># staged changes vs last commit</span>
+git diff a1b2c3d 4c5d6e7         <span class="c"># any two commits</span>
+git blame analysis.py            <span class="c"># who wrote each line, in which commit</span></pre>
+
+<div class="box hist"><b class="t">The history on GitHub (no commands needed)</b>
+<ul>
+<li>On the repo page, click the <b>commits</b> counter (or <i>History</i> on any file) to get the timeline. Click a commit to see its diff, red lines removed and green lines added.</li>
+<li><b>Insights → Network</b> draws the branch graph of the whole repository, like Figure 2 but clickable.</li>
+<li>Open a file and click <b>Blame</b> to see which commit wrote each line, and when.</li>
+<li>Use the branch dropdown to browse the project <b>as it was</b> on any branch or commit, and download that old version as a zip.</li>
+</ul></div>
+
+<h3>Go back: the three honest answers</h3>
+<p>The right command depends on how far the mistake got: only in your folder, staged, committed, or pushed.</p>
+<table>
+<tr><th style="width:36%">Where is the mistake?</th><th style="width:30%">Command</th><th>What it does</th></tr>
+<tr><td>Edited a file, <b>not committed</b>, want it back</td><td><code>git restore analysis.py</code></td><td>Throws the edit away and returns the file to the last commit. <b>Cannot be undone</b>, the edit was never saved.</td></tr>
+<tr><td>Added to staging by mistake</td><td><code>git restore --staged analysis.py</code></td><td>Takes it out of the waiting room, keeps your edit.</td></tr>
+<tr><td>Committed, <b>already pushed</b></td><td><code>git revert a1b2c3d</code></td><td>Makes a <b>new</b> commit that undoes that one. The history stays honest, nothing is rewritten, safe for shared work.</td></tr>
+<tr><td>Need an old version of <b>one file</b></td><td><code>git restore --source a1b2c3d analysis.py</code></td><td>Copies that file from the old commit into your folder. Then commit it if you want to keep it.</td></tr>
+<tr><td>Just want to <b>look</b> at the old project</td><td><code>git switch --detach a1b2c3d</code>, then <code>git switch main</code> to return</td><td>Shows the whole project as it was. Do not commit here, go back to <code>main</code> when done.</td></tr>
+</table>
+<div class="box warn"><b class="t">Careful with the sharp tools</b>
+<p><code>git reset --hard</code> and <code>git push --force</code> rewrite or destroy history. Do not use them on a branch other people use. When in doubt, prefer <code>revert</code>: it adds to the history instead of erasing it.</p></div>
+
+<div class="box hist"><b class="t">Back to Nina</b>
+<p>At 23:40 she runs <code>git log --oneline</code>, finds <i>"results table matches the paper"</i> from 21:15, and runs <code>git restore --source 4c5d6e7 analysis.py</code>. The working version is back. She commits it with a message and goes to sleep. This only works because she committed at 21:15.</p></div>
+
+<h2>5. Keep secrets and junk out of git</h2>
+<p>A repository keeps <b>everything you commit, forever</b>. If you commit a password or an API key and push it, anyone who sees the repository can see it, and it stays visible in the history even after you delete the line. Bots scan public repositories for keys within minutes.</p>
+
+<h3>The rule: secrets live in .env, never in the code</h3>
+<pre><span class="c"># .env  (one NAME=value per line, stays on your computer)</span>
+API_KEY=sk-demo-1234567890abcdef</pre>
+<pre><span class="c"># in your Python code</span>
+import os
+from dotenv import load_dotenv    <span class="c"># pip install python-dotenv</span>
+
+load_dotenv()                     <span class="c"># reads .env when the program starts</span>
+API_KEY = os.getenv("API_KEY")    <span class="c"># the secret is never written in the code</span></pre>
+<p>The same applies to anything model or API related: a Hugging Face token, an OpenAI key, a database password.</p>
+
+<h3>.gitignore: tell git what to never look at</h3>
+<p>A file called <code>.gitignore</code> lists names git should leave alone. A typical one for a data science project:</p>
+<pre>.env              <span class="c"># secrets</span>
+.venv/            <span class="c"># the virtual environment: big, and can be rebuilt</span>
+__pycache__/      <span class="c"># Python's cache</span>
+.ipynb_checkpoints/
+*.parquet         <span class="c"># big or generated data, do not put in git</span>
+results/          <span class="c"># output that code can recreate</span></pre>
+<div class="box warn"><b class="t">The trap</b>
+<p>.gitignore only affects files git is <b>not yet tracking</b>. If you already committed <code>.env</code> (even empty), editing .gitignore is not enough. Stop tracking it, but keep the file on your disk:</p>
+<pre style="margin-bottom:4pt">git rm --cached .env</pre>
+<p>(For a folder: <code>git rm -r --cached .venv</code>.) If a real key was already <b>pushed</b>, deleting it is not enough: it is in the history. <b>Rotate it</b> (create a new key, disable the old one).</p></div>
+
+<h3>Share the recipe, not the ingredients</h3>
+<ul>
+<li><code>requirements.txt</code>: one library per line. Anyone can rebuild your environment with <code>pip install -r requirements.txt</code>. (<code>pip freeze</code> prints everything installed, with exact versions.)</li>
+<li><code>.env.example</code>: the same names as your .env but with fake values (<code>API_KEY=your-key-here</code>), committed to the repo, so a teammate knows which settings to create.</li>
+<li><code>README.md</code>: what the project does, how to set it up, how to run it.</li>
+</ul>
+<pre>python -m venv .venv                       <span class="c"># an environment just for this project</span>
+.venv\Scripts\Activate.ps1                 <span class="c"># Windows (Mac/Linux: source .venv/bin/activate)</span>
+pip install -r requirements.txt</pre>
+
+<h2>6. Branches and merging</h2>
+<p>A <b>branch</b> is a separate line of work. <code>main</code> stays as it was, so you can try an idea without risk, and join it back only if it works. Branches are cheap in git: a branch is just a pointer to a commit.</p>
+<pre>git branch                       <span class="c"># list branches, * marks the current one</span>
+git switch -c add-rating         <span class="c"># create a branch and move to it</span>
+<span class="c"># ...edit, then:</span>
+git add crawler.py
+git commit -m "add rating to each book"
+git push -u origin add-rating    <span class="c"># first push of this branch</span>
+
+git switch main                  <span class="c"># go back: the new work is not here yet!</span>
+git merge add-rating             <span class="c"># bring the branch into main</span>
+git push
+git branch -d add-rating         <span class="c"># delete the finished branch</span></pre>
+<p>When you switch branches, <b>the files in your folder change</b> to match that branch. That is not magic: git is replacing them with the snapshot of the branch you chose.</p>
+
+<div class="box hist"><b class="t">Branches make the history readable</b>
+<p>Look back at Figure 2. Each experiment is a short green line that you can name (<code>add-rating</code>, <code>fix-missing-values</code>), and the merge commit records the moment it joined <code>main</code>. When a result changes and you wonder why, the graph tells you which branch introduced it.</p></div>
+
+<h3>Why many branches? A team story</h3>
+<p>Ana wants to add a rating column. Ben, at the same time, wants to fix how missing values are handled. If both edit <code>main</code> directly, they overwrite each other and <code>main</code> is broken half of the time. So each one works on a <b>separate branch</b>, started from <code>main</code>: one branch per feature or fix, named after it (<code>add-rating</code>, <code>fix-missing-values</code>). An experiment you are unsure about gets its own branch too: if it fails you delete it and <code>main</code> never knew.</p>
+<ol>
+<li>Each person works and commits on their own branch, and pushes it to GitHub.</li>
+<li>When a branch is ready, they open a <b>pull request</b>: this is how a branch is merged into <code>main</code> in a team. Teammates read the diff, the tests run, and only then is it merged.</li>
+<li>Now <code>main</code> on GitHub has Ana's work, and Ben's laptop does not. Ben runs <code>git switch main</code> and <code>git pull</code> to download it.</li>
+<li>If Ben is still working on his branch, he brings the new <code>main</code> into it (<code>git merge main</code>) so that he builds on the latest version, and fixes any conflict on his side, before his own pull request.</li>
+</ol>
+<p><b>When do I use pull?</b> Before you start working (get the latest), after a pull request was merged (update your laptop), and whenever a teammate says "I pushed". <code>push</code> sends your work, <code>pull</code> receives other people's.</p>
+
+<h3>Three ways to merge</h3>
+<table>
+<tr><th style="width:24%">Kind</th><th>What happens, and when to use it</th></tr>
+<tr><td>Fast-forward</td><td><code>main</code> did not move since the branch started, so git just moves the pointer forward. No extra commit, a straight line. Happens when you work alone.</td></tr>
+<tr><td>Merge commit</td><td><code>main</code> moved too, so git creates a new commit with two parents that joins both lines (the orange dot in Figure 2). Keeps the full history of the branch. GitHub button: <i>Create a merge commit</i>.</td></tr>
+<tr><td>Squash</td><td>All commits of the branch become <b>one</b> commit on <code>main</code>. Keeps <code>main</code> short, loses the small steps. GitHub button: <i>Squash and merge</i>.</td></tr>
+</table>
+
+<h3>Conflicts</h3>
+<p>If two branches change the <b>same line</b> differently, git cannot decide and stops the merge. It writes both versions into the file between markers:</p>
+<pre>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+PAGES = 3
+=======
+PAGES = 5
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; add-rating</pre>
+<p>Open the file, keep what you want, delete the three marker lines, then <code>git add</code> the file and <code>git commit</code>. It is normal, not a failure. Small, frequent commits and pulling often keep conflicts rare and small.</p>
+
+<h2>7. Pull requests, tests and working with others</h2>
+<p>A <b>pull request</b> (PR) is a proposal on GitHub: "please merge my branch into <code>main</code>". It is the same merge as above, with a place to <b>review and test first</b>. In a team nobody pushes straight to <code>main</code>.</p>
+<figure><img src="figures/pr_loop.png" alt="branch, commit and push, pull request, checks, merge"><figcaption>Figure 3. The loop of almost every team project.</figcaption></figure>
+
+<ol>
+<li>Create a branch, commit and <code>git push -u origin your-branch</code>.</li>
+<li>On GitHub click <b>Compare &amp; pull request</b>. Write a <b>title</b> and a short <b>description</b>: what changed, why, how to check it.</li>
+<li>Open the <b>Files changed</b> tab. This is the diff against <code>main</code>, and it is what a reviewer reads. Read it yourself first: you will often spot your own mistake.</li>
+<li>Wait for the <b>checks</b> at the bottom of the page (see below). A green tick means the tests passed.</li>
+<li>A reviewer can comment on single lines and approve. Then click <b>Merge pull request</b>.</li>
+<li>GitHub now has news your laptop does not. Update it:</li>
+</ol>
+<pre>git switch main
+git pull                          <span class="c"># download what is new on GitHub and merge it into your branch</span>
+git log --oneline --graph         <span class="c"># the branch splits off and joins back</span></pre>
+<p><b>pull vs merge vs fetch.</b> <code>merge</code> joins one branch into another on your machine. <code>pull</code> downloads from GitHub <i>and</i> merges. <code>git fetch</code> only downloads, so you can look at what is new before changing anything.</p>
+
+<h3>Tests: a safety net</h3>
+<p>A <b>test</b> is a small piece of code that checks that other code still does what it should. In Python with <code>pytest</code>, a test is a function whose name starts with <code>test</code> and contains an <code>assert</code>:</p>
+<pre>def clean(text):                        <span class="c"># in quotes.py</span>
+    return text.strip("“”")
+
+def test_clean():                       <span class="c"># in test_quotes.py</span>
+    assert clean("“Hello”") == "Hello"  <span class="c"># fails loudly if clean() ever breaks</span></pre>
+<p>Run them with <code>pip install pytest</code> and then <code>pytest</code>. Break the assert on purpose once, to see what a failing test looks like.</p>
+<p><b>Why write tests?</b> You change code all the time, and every change can silently break something else. A test tells you in seconds. <b>What to test:</b> the small functions that do a calculation (a metric, a cleaning step, a parser), with an input whose answer you know. You do not test everything: start with the functions whose failure would ruin your results. <b>When it runs:</b> on your machine before you commit, and on GitHub automatically in every pull request.</p>
+
+<h3>GitHub Actions: tests that run by themselves</h3>
+<p>A small file in your repo, <code>.github/workflows/test.yml</code>, tells GitHub to start a <b>clean computer</b> every time a pull request is opened, install your libraries from <code>requirements.txt</code>, and run <code>pytest</code>. The PR then shows a <b>green tick</b> or a <b>red cross</b>. This is called <b>continuous integration</b> (CI).</p>
+<ul>
+<li>It runs on a computer that is not yours: if your <code>requirements.txt</code> forgets a library, the check fails with <code>ModuleNotFoundError</code>. That is a real proof that your project can be set up by someone else.</li>
+<li>A red cross means "do not merge yet". Teams turn this into a rule (<i>branch protection</i>) so a broken change cannot reach <code>main</code>.</li>
+<li>Click <b>Details</b> next to a check to read its log: it is the same text you would see in your own terminal.</li>
+</ul>
+
+<div class="box hist"><b class="t">History and checks together</b>
+<p>Each commit on GitHub can carry its own green tick or red cross. When something breaks, you can scroll the history and find <b>the first red commit</b>: that is the change that broke it. Without history and tests you would be guessing.</p></div>
+
+<h2>8. What lives inside a GitHub repository</h2>
+<p>A repo page is more than a folder of files. These are the parts you will meet:</p>
+<table>
+<tr><th style="width:24%">Part</th><th>What it is for</th></tr>
+<tr><td>Code</td><td>The files, the branch dropdown, the commits counter (the history) and the green <b>Code</b> button with the URL to clone. The <b>README</b> is shown below the files: it is the front page of your project.</td></tr>
+<tr><td>Issues</td><td>A to-do and bug list. Write "the metric fails on empty input", assign it to someone, and close it from a commit or PR with <code>fixes #3</code>.</td></tr>
+<tr><td>Pull requests</td><td>Proposed merges: the diff, the discussion, the line comments, the approvals and the check results.</td></tr>
+<tr><td>Actions</td><td>The automatic runs (tests) from <code>.github/workflows</code>, with logs for each run.</td></tr>
+<tr><td>Insights</td><td>Contributors, activity, and the <b>Network</b> graph of all branches.</td></tr>
+<tr><td>Settings</td><td>Who can access the repo (collaborators), public or private, and rules such as <b>branch protection</b> (no merge while checks fail).</td></tr>
+<tr><td>Fork, Releases</td><td><b>Fork</b>: your own copy of someone else's repo, to propose changes by a PR. <b>Release</b>: a named version (<code>v1.0</code>) you can download, such as the state you hand in.</td></tr>
+</table>
+
+<h2>9. Habits of people who use git well</h2>
+<div class="cols"><div>
+<h3>Commits</h3>
+<ul>
+<li><b>Commit small and often.</b> One idea per commit. Small commits are easy to understand and to undo; a huge one is hard to split.</li>
+<li><b>Write messages for future-you.</b> Say <i>why</i>, in the imperative: <code>fix wrong denominator in kappa</code>, not <code>changes</code> or <code>asdf</code>.</li>
+<li>Run <b><code>git status</code> and <code>git diff</code> before every commit.</b> It catches the secret file you were about to publish.</li>
+<li>Add files by name when unsure, and avoid <code>git add .</code> until your .gitignore is right.</li>
+<li>Never commit code that does not run, on <code>main</code> at least.</li>
+</ul>
+</div><div>
+<h3>Repository</h3>
+<ul>
+<li><b>Never commit secrets</b> (.env, keys, tokens, passwords). If it happened, rotate the key.</li>
+<li><b>Do not commit big or generated files</b>: environments, model weights, large datasets, outputs. Keep a script that recreates them.</li>
+<li>Notebooks: clear heavy outputs before committing, they make diffs unreadable.</li>
+<li>Keep a <b>README</b>, a <b>requirements.txt</b> and a <b>.env.example</b>. Test your setup by cloning into a new folder.</li>
+</ul>
+</div></div>
+<div class="cols"><div>
+<h3>Teamwork</h3>
+<ul>
+<li><code>git pull</code> <b>before</b> you start working, so you build on the latest version.</li>
+<li>Work on a branch, open a PR, ask for a review. Do not push to <code>main</code> directly.</li>
+<li>Do not rewrite history that others have: no <code>push --force</code> on shared branches.</li>
+</ul>
+</div><div>
+<h3>For your assignment</h3>
+<ul>
+<li>Make one repository for it and commit after every working step: after the data loads, after the annotation, after each metric.</li>
+<li>Put your seed and your settings in the code, so a commit reproduces your result.</li>
+<li>Keep the model token in <code>.env</code>, never in the notebook.</li>
+<li>Before you hand in, check <code>git log</code>: if your history tells the story of your work, you did it right.</li>
+</ul>
+</div></div>
+
+<h2>10. Cheat sheet: each command and why you use it</h2>
+<table>
+<tr><th style="width:34%">Command</th><th>Why you use it</th></tr>
+<tr><td><code>git init</code></td><td>Start tracking a folder. Creates the hidden <code>.git</code> with the history.</td></tr>
+<tr><td><code>git clone &lt;url&gt;</code></td><td>Get a full copy of a GitHub repo, with all its history, on your computer.</td></tr>
+<tr><td><code>git status</code></td><td>See what changed and what is staged. Run it before every commit.</td></tr>
+<tr><td><code>git diff</code> · <code>--staged</code></td><td>See the exact lines you changed, before you save them.</td></tr>
+<tr><td><code>git add &lt;file&gt;</code></td><td>Choose what goes into the next snapshot.</td></tr>
+<tr><td><code>git commit -m "…"</code></td><td>Save the snapshot with the reason. This is what makes the history.</td></tr>
+<tr><td><code>git push</code></td><td>Back up your commits on GitHub and share them.</td></tr>
+<tr><td><code>git pull</code> · <code>git fetch</code></td><td>Get what others pushed (pull also merges it; fetch only looks).</td></tr>
+<tr><td><code>git log --oneline --graph --all</code></td><td>Read the history and see how branches split and joined.</td></tr>
+<tr><td><code>git branch</code> · <code>git switch -c &lt;name&gt;</code></td><td>List branches, or start a separate line of work without risk to <code>main</code>.</td></tr>
+<tr><td><code>git switch &lt;name&gt;</code></td><td>Move between lines of work (the files in your folder change).</td></tr>
+<tr><td><code>git merge &lt;name&gt;</code></td><td>Bring a finished branch into the current one.</td></tr>
+<tr><td><code>git restore &lt;file&gt;</code></td><td>Throw away an uncommitted edit.</td></tr>
+<tr><td><code>git revert &lt;id&gt;</code></td><td>Undo a commit that is already pushed, without rewriting history.</td></tr>
+<tr><td><code>git rm --cached &lt;file&gt;</code></td><td>Stop tracking a file (such as <code>.env</code>) but keep it on your disk.</td></tr>
+</table>
+
+<h3>When things go wrong</h3>
+<table>
+<tr><th style="width:36%">What you see</th><th>Why, and what to do</th></tr>
+<tr><td>Push rejected: "fetch first" or "unrelated histories"</td><td>The GitHub repo was created with a README or .gitignore. Easiest: delete it on GitHub, create an empty one, push again.</td></tr>
+<tr><td><code>git commit</code> opens a strange text editor</td><td>You forgot <code>-m "message"</code>. Press <code>Esc</code>, type <code>:q!</code>, Enter, and try again with <code>-m</code>.</td></tr>
+<tr><td>I am scared I broke everything</td><td>Run <code>git status</code>, then <code>git log --oneline</code>. Committed work is almost never lost; this is exactly why we commit.</td></tr>
+</table>
+
+<p>More: GitHub's official cheat sheet (PDF in the lab folder), <b>docs.github.com</b> and the free book <b>Pro Git</b> (<b>git-scm.com/book</b>).</p>
+<p style="text-align:center;color:#6b7280;margin-top:12pt">Commit early. Commit often. Look at your history.</p>
+
+</body>
+</html>

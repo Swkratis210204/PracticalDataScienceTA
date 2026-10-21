@@ -13,6 +13,7 @@ Students receive a 20-line crawler (`template/`), put it under git, push it to a
 | `teacher_guide.md` | the script for the lab: commands, timing, what to say, checks, common problems |
 | `student_guide.md` | the students' step-by-step sheet with checkpoints and extra steps |
 | `student_guide.pdf` | the student guide as a PDF, made from `student_guide.md` (regenerate it after editing the markdown) |
+| `git_github_handbook.pdf` | a 10-page self-paced reading for students (story, git vs GitHub, history, secrets, branches, PRs, tests, habits, cheat sheet). Source and figures in `handbook/`; regenerate the figures with `python handbook/make_figures.py` and print `handbook/handbook.html` to PDF from a browser |
 | `git-cheat-sheet-education.pdf` | GitHub's official cheat sheet, from their documentation |
 | `template/test_quotes.py` | one test of `clean()` from `quotes.py`. In the repo from the first commit, but it fails with an import error until `quotes.py` is added in the PR step, so students should not run `pytest` before then |
 | `template/.github/workflows/test.yml` | GitHub Actions: installs `requirements.txt` plus `pytest` and runs `pytest`. Runs only on pull requests (`on: pull_request`), never on a push, so nothing runs before the PR step |
