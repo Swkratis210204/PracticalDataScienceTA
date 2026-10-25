@@ -2,7 +2,7 @@
 
 | 📅 Deadline | 👤 Work | 🛠️ Tools |
 |---|---|---|
-| TBA | individual | Python, Colab (T4 GPU), SynDisco |
+| 02/11/2026 | individual | Python, Colab (T4 GPU), SynDisco |
 
 <!-- TODO(teacher): fill in the deadline (left as TBA for now) -->
 
@@ -26,12 +26,14 @@ Each part has a task and something you hand in:
 
 | Part | You do | You hand in |
 |---|---|---|
-| **A** | Draw **your own** 20 comments with the script, then annotate them yourself in the small web page we give you | your seed, `items_rated.csv` (ratings, and evidence for the toxic ones) |
+| **A** | Draw **your own** 20 comments with the script, then annotate them yourself in the small web page we give you | your seed, your 20 items and ratings (with evidence for the toxic ones), shown in the notebook |
 | **B** | Open your items and your annotations in your notebook, and show how you rated | a histogram and a boxplot of your ratings |
-| **C** | Generate one small conversation about each item | `generated.jsonl` |
-| **D, E** | Persona annotators rate the items like you did, with the conversation as context (D) and alone (E) | the annotations of both conditions (one table or two) |
-| **F** | Measure agreement across everything | the agreement results (tables, figures) |
-| **G** | Compare the two settings and tell the story | a report (4-5 pages) |
+| **C** | Generate one small conversation about each item | the 20 conversations, shown in the notebook |
+| **D, E** | Persona annotators rate the items like you did, with the conversation as context (D) and alone (E) | the tables of annotations of both conditions, shown in the notebook |
+| **F** | Measure simple agreement across everything | the agreement tables and figures, in the notebook |
+| **G** | Compare the two settings and tell the story | written explanations in markdown cells of the notebook |
+
+> 📦 **You upload only two files: your notebook (with all your explanations written in markdown cells inside it) and a markdown file with your interactions with LLMs.** See *Hand in and grading* at the end.
 
 > 💻 **Part A runs on your own computer** (Python 3 and a browser). **From part B on, use Google Colab with a T4 GPU**: it is free, and the model runs much faster than on a CPU (*Runtime → Change runtime type → T4 GPU*).
 
@@ -54,7 +56,7 @@ python prepare_items.py --seed 123456
 
 The first line installs **pandas**, which the script needs (only the first time). The second line runs the script, which writes `items/items.csv` (your 20 items) and `items/annotate.html` (the page of step 2).
 
-- **Seed:** the same seed gives the same 20 items, another seed gives another sample. Write it down for your notebook and report, and **keep the same seed**: if you change it after you have started rating, you get other items and your ratings no longer match.
+- **Seed:** the same seed gives the same 20 items, another seed gives another sample. Write it down in the first cell of your notebook, and **keep the same seed**: if you change it after you have started rating, you get other items and your ratings no longer match.
 - **Range:** your sample mixes civil and toxic texts, so rate each one on its own.
 - You do not need to open `data/pool.csv`: the script reads it for you.
 
@@ -81,13 +83,13 @@ Upload `items.csv` and `items_rated.csv` to Colab and open both in your notebook
 
 Say in a sentence or two what they show: did you use the whole scale, and do you lean towards civil or toxic?
 
-`items_rated.csv` is your reference point for part F: keep it as it is.
+`items_rated.csv` is your reference point for part F: keep it as it is. Since you upload only the notebook, **print both tables in full in the notebook** (the 20 items and your ratings, labels and evidence), so that they can be read and checked without your files.
 
 ## 💬 <ins>C. Generate one conversation per item</ins>
 
 For each of your 20 items (a comment), random participants with different identities have a short conversation about it, with the item as their starting context. The how is explained in the SynDisco guide [Creating discussions](https://dimits-ts.github.io/syndisco/guides/creating_discussions.html).
 
-**What you must have: 20 conversations that make sense**, one per item. A conversation makes sense when the participants react to the item, in their own voice, without cutting off in the middle of a sentence, refusing, or repeating each other. **Save them in `generated.jsonl`** and **show them in your notebook**.
+**What you must have: 20 conversations that make sense**, one per item. A conversation makes sense when the participants react to the item, in their own voice, without cutting off in the middle of a sentence, refusing, or repeating each other. **Show them in your notebook** (all 20, readable).
 
 You choose the settings (how many participants, how many comments, how long each comment may be). Keep the size moderate: too short gives the annotators little to read, too long is slow and may drift away from the item.
 
@@ -124,7 +126,7 @@ The grid above is only an example to start from. This is the persona the model w
 
 ## 🧠 <ins>Which model?</ins>
 
-A good small starting point is **Qwen2.5-3B-Instruct** (4-bit): fast, but weak, it may refuse, ramble or ignore the format. **You choose the model**: this one, one from the list below, or any other that your computer or Colab can handle. The list is only a suggestion. Run your notebook with it. It is good practice to **try a few models** on a few items before you choose, to get the best result: a small model often gives poor conversations, and a larger one may follow the instructions better. You may also run a second model on the whole task to see whether your results hold. Say in the report which model you used and why. The ones below are pre-shrunk to 4 bits, need no account or token, and fit the 16 GB of a Colab T4:
+A good small starting point is **Qwen2.5-3B-Instruct** (4-bit): fast, but weak, it may refuse, ramble or ignore the format. **You choose the model**: this one, one from the list below, or any other that your computer or Colab can handle. The list is only a suggestion. Run your notebook with it. It is good practice to **try a few models** on a few items before you choose, to get the best result: a small model often gives poor conversations, and a larger one may follow the instructions better. You may also run a second model on the whole task to see whether your results hold. Say in the notebook which model you used and why. The ones below are pre-shrunk to 4 bits, need no account or token, and fit the 16 GB of a Colab T4:
 
 | Model (`model_path`) | Size | Download | Licence | Why try it |
 |---|---|---|---|---|
@@ -147,7 +149,7 @@ A larger model usually follows the instructions better but is slower (8B takes a
 
 > 💡 **Hints**
 >
-> - **One model per run**, the same in D and E, for every persona and the baseline. To compare models, repeat the whole of D and E for each and say so in the report.
+> - **One model per run**, the same in D and E, for every persona and the baseline. To compare models, repeat the whole of D and E for each and say so in the notebook.
 > - **Compatibility varies.** Models handle the system prompt and the output format differently. If a model fails every time (an error, or answers you can never parse), switch to another one. An occasional invalid answer is normal: count it, as in parts D and E.
 > - **Prefer models that answer directly.** Reasoning models (for example the *Qwen3* family) write a long chain of thought first, which makes a short, parseable answer hard to get.
 > - Load **one model at a time**: free the GPU (`del model`, restart the runtime if needed) before the next.
@@ -165,7 +167,7 @@ There are two conditions. In **each** of them, every identity of your grid annot
 
 **The model annotators do the same task as you.** For every item, each one gives a **rating from 1 (fully civil) to 5 (very toxic)**. If it rates **3, 4 or 5**, it also gives **the words of the item that make it toxic** (its evidence); for a 1 or a 2 the evidence is `not needed`. The `label` (1-2 `civil`, 3-5 `toxic`) comes from the rating, with the same rule as in the page.
 
-**Report the ratings of each condition exactly as people did it**: one table for D and one for E, with the columns `id | text | rating | label | evidence` for every annotator, plus a column `annotator` to tell them apart and a column **`prompt`** with the prompt the annotator received (SynDisco saves it with every answer). Show both in your notebook and save them, as one table with a column `context` or as two tables.
+**Report the ratings of each condition exactly as people did it**: one table for D and one for E, with the columns `id | text | rating | label | evidence` for every annotator, plus a column `annotator` to tell them apart and a column **`prompt`** with the prompt the annotator received (SynDisco saves it with every answer). Show both in your notebook, as one table with a column `context` or as two tables.
 
 > 💡 **Hints**
 >
@@ -184,31 +186,32 @@ There are two conditions. In **each** of them, every identity of your grid annot
 | **3** | each persona and the baseline, **without against with context** (E against D) | How much does the context move an annotator on its own? Is the baseline moved more or less than the personas? |
 | **4** | **persona against persona**, within each condition (the baseline is one more annotator) | Does identity matter at all? Which dimension (gender, politics, age...) separates the personas the most? Do they agree more or less once they have read the conversation? |
 
-**How to measure.** Compute everything in **two ways**: **categorical** (civil against toxic, 1-2 against 3-5) and **numerical** (the 1-5 rating). **The choice of metrics is yours.** For example: Cohen's kappa for the categorical view; weighted kappa or Spearman correlation for the numerical one; Krippendorff's alpha, with a heatmap of every pair, when you compare all the annotators at once. For every metric you use, **explain in the report why you chose it**, and interpret its values next to the results: a number alone is not a result.
+**How to measure.** Use only **simple agreement**: the share of the 20 items on which two annotators give the same answer (for example 14 of 20 = 70%). Compute it in **two ways**: **categorical** (same label, civil against toxic, 1-2 against 3-5) and **numerical** (same exact 1-5 rating). No chance-corrected measures (kappa, alpha) are needed. For persona against persona (comparison 4), compute the agreement of every pair and show it as a table or a heatmap, plus the average per condition. Interpret the values next to the results: a number alone is not a result.
 
 > 🎯 **The key result: which identity annotates most like you?** Rank the personas by agreement with you, with and without context, and name the closest one **with all its attributes** (for example "closest to the *woman / left / over 50*"; if you added dimensions, name all of them). Is it closer to you than the baseline is? Does it change when the context is added?
 
 > 💡 **Hints**
 >
-> - Libraries: scikit-learn has [`cohen_kappa_score`](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.cohen_kappa_score.html) (see its `weights`), statsmodels has [`fleiss_kappa`](https://www.statsmodels.org/stable/generated/statsmodels.stats.inter_rater.fleiss_kappa.html), and [`krippendorff`](https://pypi.org/project/krippendorff/) has Krippendorff's alpha (check which level of measurement fits a 1-5 label).
-> - Match the items by id, and check for an annotator that always gives the same label: it breaks kappa.
-> - With 20 items the values are noisy: take that into account when you interpret them.
+> - Simple agreement is one line of pandas or numpy: `(a == b).mean()` on two label columns sorted by id.
+> - Match the items by id, and drop or count the invalid answers (say which you did). Check for an annotator that always gives the same label: its agreement then only reflects how many items have that label.
+> - Simple agreement does not correct for chance: with two labels, 50% is what coin flips would give, and if most items are toxic a constant annotator already scores high. Keep that in mind when you interpret the values.
+> - With 20 items the values are noisy (one item is 5 points): take that into account when you interpret them.
 
-## 📝 <ins>G. The report</ins>
+## 📝 <ins>G. The explanations, inside the notebook</ins>
 
-Write a report of **3-4 pages**, plus **one more page** for part 3 (AI use and sources): **4-5 pages in total**. It has three parts.
+There is no separate report. Write your explanations in **markdown cells of the notebook**, next to the code and results they belong to, and finish with a short closing section. Keep them concise: about **3-4 pages** of text in total. They have three parts.
 
-> 🌐 **The report must be written in English.**
+> 🌐 **The explanations must be written in English.**
 >
-> 🔗 **The report must contain the link to your GitHub repository.** Working with GitHub on this assignment is mandatory.
+> 🔗 **The first cell of the notebook must contain your seed and the link to your GitHub repository.** Working with GitHub on this assignment is mandatory.
 
 **1. Justify your choices.** At each step say what you did **and why**: your seed, how you rated (the guidelines you followed, an example of your evidence), how you made the conversations (the number of participants and of comments, the length limit, and why), the model you chose and why (and which others you tried, if any), your grid (what you changed or added compared with the starting grid, the dimensions and the exact attributes and values of each persona, and why), where you put the context, how you handled invalid answers.
 
-**2. Results and story.** Report the results of the four comparisons of part F, in tables and figures. For every metric you chose, say **why you chose it**, then **interpret** the values: what they mean and what they tell you. There is a lot to explain here, so plan your pages accordingly. Does context move the labels, and in which direction? Which identity is closest to you, and is it the same with and without context? Does the context bring the models closer to you or further away? Do the personas agree more or less with each other once they have read the conversation? Which identities move the most? Do the personas differ from the baseline at all, and which dimension (gender, politics, age...) matters most?
+**2. Results and story.** Report the results of the four comparisons of part F, in tables and figures. **Interpret** the agreement values: what they mean and what they tell you. This is the largest part. Does context move the labels, and in which direction? Which identity is closest to you, and is it the same with and without context? Does the context bring the models closer to you or further away? Do the personas agree more or less with each other once they have read the conversation? Which identities move the most? Do the personas differ from the baseline at all, and which dimension (gender, politics, age...) matters most?
 
 > ⚖️ **State clearly that the closest identity does not mean you *are* that identity.** Think about the limitations: 20 items, a small model, one generated conversation per item (and that conversation is itself a bias), no sampling, personas that are only descriptions.
 
-**3. AI use and sources** (the extra page). State how you used AI (chatbots, code assistants...): for what, and what you checked yourself. List your sources: the guides, papers and documentation you used, and anything else you relied on.
+**3. AI use and sources.** State in a short section how you used AI (chatbots, code assistants...): for what, and what you checked yourself. The full record goes in the separate markdown file (see below). List your sources: the guides, papers and documentation you used, and anything else you relied on.
 
 ---
 
@@ -216,15 +219,12 @@ Write a report of **3-4 pages**, plus **one more page** for part 3 (AI use and s
 
 **You upload:**
 
-- [ ] **your notebook**, which runs top to bottom, with the seed written down and **every result displayed** in it, figures included (see below)
-- [ ] **your items**: `items.csv` (the 20 comments drawn with your seed) and `items_rated.csv` (downloaded from the annotation page: your ratings, labels and evidence), made before you saw any model output
-- [ ] **the generated conversations**: `generated.jsonl`, one per item (part C)
-- [ ] **your grid**: the final grid in a file, with the dimensions, the values and the exact attributes of each persona
-- [ ] **the annotations of the model annotators**, with and without context, in the same format as yours plus the columns `annotator` and `prompt`, for every persona of your grid plus the baseline on all 20 items (parts D and E): **one table** with a column `context`, **or two tables**, as you prefer
-- [ ] **the agreement results** (part F), in whatever format you prefer (csv, json...)
-- [ ] **the report**, in English, with the **link to your GitHub repository**
+Exactly **two files**:
 
-**Every result must be visible in the notebook.** Choose the clearest form (printed output, tables, figures), with titles and labels. A result that is computed but not shown does not count: someone reading your notebook must see each result without running anything.
+- [ ] **your notebook** (`.ipynb`), with the seed and the GitHub link in the first cell and **every explanation written in markdown cells inside it** (part G). It shows, in this order: your items and ratings (A, B), the 20 conversations (C), the grid with the exact attributes of each persona, the annotation tables with and without context for every persona plus the baseline on all 20 items, with the `annotator` and `prompt` columns (D, E), the agreement results (F), and the explanations (G).
+- [ ] **a markdown file with your interactions with LLMs** (e.g. `llm_interactions.md`): the prompts you sent to chatbots or code assistants and their answers, or a faithful summary of each exchange if it is very long. Say at the top which tools you used. If you used no AI, write that in the file.
+
+You do not upload `items.csv`, `items_rated.csv`, `generated.jsonl` or any other file: everything must be **visible in the notebook**. Choose the clearest form (printed output, tables, figures), with titles and labels. A result that is computed but not shown does not count: someone reading your notebook must see each result without running anything. The notebook should also run top to bottom.
 
 Anything missing means it is not graded until complete.
 
@@ -237,9 +237,9 @@ Anything missing means it is not graded until complete.
 | F | 20% |
 | G | 15% |
 
-> ❗ **Mandatory: every choice and every result in the report must be justified.**
+> ❗ **Mandatory: every choice and every result in the notebook must be justified.**
 >
-> For each step, state **what** you did, **why** you did it, and **the result** you obtained. A choice without a reason, or a result without an explanation, will not be accepted. For example: "I used Cohen's kappa for the categorical comparison because [reason]; the values obtained are [values]."
+> For each step, state **what** you did, **why** you did it, and **the result** you obtained. A choice without a reason, or a result without an explanation, will not be accepted. For example: "I measured agreement as the share of items with the same label because [reason]; the values obtained are [values]."
 
 ---
 
@@ -252,7 +252,6 @@ Read these **before part C**: it is the tool you will use for the conversations 
 | [SynDisco overview](https://dimits-ts.github.io/syndisco/overview.html) | what the tool is and how its pieces fit together (personas, discussions, annotators) |
 | [Discussion guide](https://dimits-ts.github.io/syndisco/guides/creating_discussions.html) | for part C: how random participants talk about an item, and how to give them a shared context |
 | [Annotation guide](https://dimits-ts.github.io/syndisco/guides/creating_annotations.html) | for parts D and E: how an annotator is created, what it receives and what it writes |
-| [SynDisco paper](https://arxiv.org/abs/2503.16505) | the research behind the tool: useful for the limits you discuss in the report |
-| [Cohen's kappa](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.cohen_kappa_score.html) and [Krippendorff's alpha](https://pypi.org/project/krippendorff/) | for part F: to choose your agreement measures and explain them |
+| [SynDisco paper](https://arxiv.org/abs/2503.16505) | the research behind the tool: useful for the limits you discuss in your explanations |
 
 Then answer for yourself: what is a persona, and what does the model receive? What do all the participants of a discussion share? What does an annotation experiment take as input, and what does it write?
